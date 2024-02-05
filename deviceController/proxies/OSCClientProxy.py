@@ -6,7 +6,7 @@ class OSCClientProxy(object):
 
     port = None
 
-    def __init__(self, ip="192.168.80.255", port=10338):
+    def __init__(self, ip="192.168.191.255", port=10338):
         self.port = port
         self.adapter = None
 
