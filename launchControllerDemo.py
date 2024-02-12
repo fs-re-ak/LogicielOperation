@@ -4,8 +4,8 @@ from deviceController.DeviceControllerManager import DeviceControllerManager
 from streamInterfaces.FrameManager import FrameManager
 
 class Configuration():
-    INPUT_FRAME_ACTIVE = True
-    DEVICE_CONTROLLER_ACTIVE = True
+    INPUT_FRAME_ACTIVE = False
+    DEVICE_CONTROLLER_ACTIVE = False
 
 def frameHandler(frame):
     print("Demo-Frame:" + str(frame))

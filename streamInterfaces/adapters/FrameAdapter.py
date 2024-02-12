@@ -1,7 +1,7 @@
 
 import json
 from threading import Thread
-from time import sleep
+from time import sleep, time
 import random
 
 class FrameAdapter():
@@ -21,7 +21,7 @@ class FrameAdapter():
     def fakeDataTask(self):
 
         while True:
-            unpackedFrame = {"Neutral": random.random(), "Happiness": random.random(), "Anger": random.random(), "Engagement": random.random()*1.5}
+            unpackedFrame = {"Neutral": random.random(), "Happiness": random.random(), "Anger": random.random(), "Engagement": random.random()*1.5, "last_message":time()}
             if self.manager is not None:
                 #print("[FrameAdapter] Stubbed")
                 self.manager.frameUnpacked(unpackedFrame)
@@ -42,7 +42,11 @@ class FrameAdapter():
         if "Metrics" not in frame.keys():
             return 
         
-        unpackedFrame = {"Neutral": frame["Metrics"]["Emotions"][0], "Happiness": frame["Metrics"]["Emotions"][1], "Anger": frame["Metrics"]["Emotions"][2], "Engagement": frame["Metrics"]["Engagement"][0]}
+        unpackedFrame = {"Neutral": frame["Metrics"]["Emotions"][0], 
+                         "Happiness": frame["Metrics"]["Emotions"][1], 
+                         "Anger": frame["Metrics"]["Emotions"][2], 
+                         "Engagement": frame["Metrics"]["Engagement"][0],
+                         "last_message":time()}
         
         if self.manager is not None:
             self.manager.frameUnpacked(unpackedFrame)
