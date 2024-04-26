@@ -4,52 +4,44 @@ from threading import Thread
 from time import sleep, time
 import random
 
+from streamInterfaces.adapters.frameUtils import createFrame, assignRandomValues
+
 class FrameAdapter():
 
     def __init__(self, stubbed=False):
 
         self.manager = None
+        self.frame = createFrame()
+        self.callbacks = []
+        self.stubbed = stubbed
 
-        if stubbed:
-            fakeDataThread = Thread(target=self.fakeDataTask)
-            fakeDataThread.daemon = True
-            fakeDataThread.start()
+        periodicCallbackThread = Thread(target=self.periodicCallbackTask)
+        periodicCallbackThread.daemon = True
+        periodicCallbackThread.start()
 
         pass
 
 
-    def fakeDataTask(self):
+    def periodicCallbackTask(self):
 
         while True:
-            unpackedFrame = {"Neutral": random.random(), "Happiness": random.random(), "Anger": random.random(), "Engagement": random.random()*1.5, "last_message":time()}
-            if self.manager is not None:
-                #print("[FrameAdapter] Stubbed")
-                self.manager.frameUnpacked(unpackedFrame)
-            else:
-                print(unpackedFrame)
+
+            if self.stubbed:
+                assignRandomValues(self.frame)
+
+            for callback in self.callbacks:
+                callback(self.frame)
+
             sleep(0.5)
 
-    def attachManager(self, manager):
-        self.manager = manager
-        pass
+    def addCallback(self,callback):
+        self.callbacks.append(callback)
 
+    def msgCallback(self, address, message):
 
-    def msgCallback(self, frame):
+        metric = address.split('/')[-1]
 
-        # unpack context and return results
-        frame = json.loads(frame)
-        
-        if "Metrics" not in frame.keys():
-            return 
-        
-        unpackedFrame = {"Neutral": frame["Metrics"]["Emotions"][0], 
-                         "Happiness": frame["Metrics"]["Emotions"][1], 
-                         "Anger": frame["Metrics"]["Emotions"][2], 
-                         "Engagement": frame["Metrics"]["Engagement"][0],
-                         "last_message":time()}
-        
-        if self.manager is not None:
-            self.manager.frameUnpacked(unpackedFrame)
-        else:
-            print(unpackedFrame)
+        if metric in self.frame.keys():
+            self.frame[metric] = float(message)
+
         pass

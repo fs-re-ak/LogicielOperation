@@ -7,7 +7,7 @@ from streamInterfaces.adapters.FrameAdapter import FrameAdapter
 
 class FrameManager():
 
-    def __init__(self, configuration, stubbed=False):
+    def __init__(self, configuration, deviceFilter="*", stubbed=False):
 
         self.EmoCogObservers = []
 
@@ -18,21 +18,14 @@ class FrameManager():
                 self.proxy = UnixSocketProxy("CLIENT")
                 self.proxy.attachAdapter(self.adapter)
             elif configuration == "OSC":
-                self.proxy = OSCServerProxy(self.adapter)
+                self.proxy = OSCServerProxy(self.adapter, filter=deviceFilter)
         else:
             self.proxy = None
 
-        self.adapter.attachManager(self)
-
         pass
 
-    def attachEmoCogObserver(self, handle):
-        self.EmoCogObservers.append(handle)
-
-    def frameUnpacked(self, dataSample):
-        # connect with experience monitoring
-        for handle in self.EmoCogObservers:
-            handle(dataSample)
+    def attachCallback(self, callback):
+        self.adapter.addCallback(callback)
 
 
 

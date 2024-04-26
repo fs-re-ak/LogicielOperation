@@ -2,6 +2,9 @@
 from deviceController.DeviceControllerAdapter import DeviceControllerAdapter
 from deviceController.proxies.UnixSocketProxy import UnixSocketProxy
 from deviceController.proxies.OSCClientProxy import OSCClientProxy
+from deviceController.proxies.MQTTClientProxy import MQTTClientProxy
+from deviceController.proxies.MQTTBrokerPing import MQTTBrokerPing
+
 
 
 class DeviceControllerManager():
@@ -37,6 +40,13 @@ class DeviceControllerManager():
                 self.adapter.attachProxy(self.proxy)
             elif configuration=='OSC':
                 self.proxy = OSCClientProxy()
+                self.adapter = DeviceControllerAdapter()
+                self.proxy.attachAdapter(self.adapter)
+                self.adapter.attachProxy(self.proxy)
+            elif configuration=='MQTT':
+
+                self.pinger = MQTTBrokerPing()
+                self.proxy = MQTTClientProxy()
                 self.adapter = DeviceControllerAdapter()
                 self.proxy.attachAdapter(self.adapter)
                 self.adapter.attachProxy(self.proxy)

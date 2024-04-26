@@ -20,7 +20,6 @@ class DeviceControllerAdapter():
 
         pass
 
-
     def sendTag(self,tag,values):
 
         message = {"Type":"TAG","Content":{"Code":tag,"Values":str(values)}}

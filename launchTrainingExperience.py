@@ -1,9 +1,32 @@
 
+"""
+File: launchTrainingExperience.py
+Author: Fred Simard @ RE-AK Tech
+Date: April 2024
+Description: This shows how to read data coming from a Nucleus-Hermes and how to send it control signals.
+
+* Stream refer to the data coming in. The underlying and recommended protocol is OSC. As long as both
+devices are on the same network, this should work off the bat. If the device is inactive, you will read 0s
+or the last valid value will be repeated.
+
+If you are encountering problems, you should:
+    - validate that both devices are on the same network
+    - validate that UDP port 10337 is open
+
+* Stream refer to the data coming in. The underlying and recommended protocol is OSC. As long as both
+devices are on the same network, this should work off the bat.
+
+"""
+
+
+
+
 from time import sleep
 from deviceController.DeviceControllerManager import DeviceControllerManager
 from streamInterfaces.FrameManager import FrameManager
 from random import shuffle, seed
 import winsound
+from time import time
 
 frequency = 200  # Set Frequency To 2500 Hertz
 duration = 500  # Set Duration To 1000 ms == 1 second
@@ -44,11 +67,11 @@ def frameHandler(frame):
 
 #Configure objects
 inputFrames = FrameManager('OSC', stubbed=not Configuration.INPUT_FRAME_ACTIVE)
-deviceController = DeviceControllerManager('OSC', stubbed=not Configuration.DEVICE_CONTROLLER_ACTIVE)
+deviceController = DeviceControllerManager('MQTT', stubbed=not Configuration.DEVICE_CONTROLLER_ACTIVE)
 inputFrames.attachEmoCogObserver(frameHandler)
 
 # prepare experiments paramters
-EXPRESSIONS = ["NEUTRAL", "HAPPY", "ANGER", "BLINKS", "JAW_CLENCH", "LOOK_LEFT", "LOOK_RIGHT"]
+EXPRESSIONS = ["mNEUTRAL", "mHAPPY", "mANGER", "mSURPRISE", "mCONTEMPT-L (mouth)", "mCONTEMPT-R (mouth)", "mDISGUST (nose)", "FEAR", "mSADNESS", "BLINKS", "JAW_CLENCH", "HEAD_UP", "HEAD_DOWN"]
 NB_PRESENTATIONS = 3
 PREPARE_DELAY = 3
 MAINTAIN_DELAY = 6
@@ -82,7 +105,7 @@ for idx, stimuliId in enumerate(trialsSequence):
             winsound.Beep(frequency,duration)
             sleep(1)
 
-sleep(1)
+sleep(8)
 deviceController.sendStopRecording()
 print("End of the experiment")
 sleep(5)
