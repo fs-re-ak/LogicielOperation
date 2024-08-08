@@ -40,7 +40,8 @@ from streamInterfaces.adapters.frameUtils import showFrame
 class Configuration():
     INPUT_FRAME_ACTIVE = True
     DEVICE_CONTROLLER_ACTIVE = True
-    DEVICE_ID = "/hermes-hacklab-6*" # /<your device id>*
+    #DEVICE_ID = "/hermes-hacklab-6*" # /<your device id>*
+    DEVICE_ID = "/*" # /<your device id>*
     OPERATION_MODE = "LIVE_DISPLAY" # CONTROL_DEMO
 
 def frameHandler(frame):
